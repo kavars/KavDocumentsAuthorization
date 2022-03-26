@@ -22,11 +22,6 @@ final class CodeViewController: UIViewController {
         case change
     }
     
-    // use target like:
-    // - create code
-    // - auth - enter code
-    // - reset code
-    
     init(with state: CodeModuleState, authorizationService: AuthorizationServiceProtocol) {
         self.state = state
         self.authorizationService = authorizationService
@@ -39,6 +34,9 @@ final class CodeViewController: UIViewController {
     
     private let state: CodeModuleState
     private let authorizationService: AuthorizationServiceProtocol
+    private var isFirstCode: Bool = true
+    private var code: String = ""
+    
     weak var moduleOutput: CodeModuleOutput?
     
     let codeTextField: UITextField = {
@@ -68,6 +66,16 @@ final class CodeViewController: UIViewController {
         moduleOutput?.codeModuleWantsToClose()
     }
     
+    func setIncorrectCodeState() {
+        codeTextField.layer.borderWidth = 0.8
+        codeTextField.layer.borderColor = UIColor.systemRed.cgColor
+    }
+    
+    func setNormalCodeState() {
+        codeTextField.layer.borderWidth = 0
+        codeTextField.layer.borderColor = nil
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -81,9 +89,6 @@ final class CodeViewController: UIViewController {
         view.addSubview(continueButton)
         
         switch state {
-        case .create:
-            // none
-            break
         case .login:
             if authorizationService.isBiometryAvailible && authorizationService.isBiometryEnabled {
                 
@@ -117,8 +122,7 @@ final class CodeViewController: UIViewController {
                 navigationItem.rightBarButtonItem = biometryNavBarButton
                 
             }
-        case .change:
-            // none
+        default:
             break
         }
         
@@ -127,27 +131,44 @@ final class CodeViewController: UIViewController {
             
             switch self.state {
             case .create:
-                // re enter code second time, before biometry
-                self.authorizationService.setCode(text)
-                if self.authorizationService.isBiometryAvailible {
-                    self.moduleOutput?.codeModuleWantsToOpenBiometry()
+                if self.isFirstCode {
+                    self.code = text
+                    self.codeTextField.text = nil
+                    self.isFirstCode = false
                 } else {
-                    self.authorizationService.setAuthorizationEnable(true)
-                    self.moduleOutput?.codeModuleWantsToAuthSuccess()
+                    if self.code == text {
+                        self.authorizationService.setCode(text)
+                        if self.authorizationService.isBiometryAvailible {
+                            self.moduleOutput?.codeModuleWantsToOpenBiometry()
+                        } else {
+                            self.authorizationService.setAuthorizationEnable(true)
+                            self.moduleOutput?.codeModuleWantsToAuthSuccess()
+                        }
+                    } else {
+                        self.setIncorrectCodeState()
+                    }
                 }
             case .login:
                 if self.authorizationService.verifyCode(text) {
                     self.moduleOutput?.codeModuleWantsToAuthSuccess()
                 } else {
-                    print("incorrect code")
+                    self.setIncorrectCodeState()
                 }
             case .change:
-                self.authorizationService.setCode(text)
-                self.authorizationService.setAuthorizationEnable(true)
-                self.moduleOutput?.codeModuleWantsToAuthSuccess()
+                if self.isFirstCode {
+                    self.code = text
+                    self.codeTextField.text = nil
+                    self.isFirstCode = false
+                } else {
+                    if text == self.code {
+                        self.authorizationService.setCode(text)
+                        self.authorizationService.setAuthorizationEnable(true)
+                        self.moduleOutput?.codeModuleWantsToAuthSuccess()
+                    } else {
+                        self.setIncorrectCodeState()
+                    }
+                }
             }
-            
-            
         }), for: .touchUpInside)
         
         NSLayoutConstraint.activate([
@@ -167,8 +188,6 @@ final class CodeViewController: UIViewController {
         super.viewDidAppear(animated)
         
         switch state {
-        case .create:
-            break
         case .login:
             if authorizationService.isBiometryAvailible && authorizationService.isBiometryEnabled {
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
@@ -185,7 +204,7 @@ final class CodeViewController: UIViewController {
                     }
                 }
             }
-        case .change:
+        default:
             break
         }
         
@@ -195,6 +214,8 @@ final class CodeViewController: UIViewController {
 
 extension CodeViewController: UITextFieldDelegate {
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        
+        setNormalCodeState()
         
         guard let textFieldText = textField.text,
               let rangeOfTextToReplace = Range(range, in: textFieldText) else {
