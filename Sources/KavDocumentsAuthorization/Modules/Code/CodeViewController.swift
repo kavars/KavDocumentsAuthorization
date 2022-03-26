@@ -72,8 +72,8 @@ final class CodeViewController: UIViewController {
     }
     
     func setNormalCodeState() {
-        codeTextField.layer.borderWidth = 0
-        codeTextField.layer.borderColor = nil
+        codeTextField.layer.borderColor = UIColor.black.cgColor
+        codeTextField.layer.borderWidth = 0.5
     }
     
     override func viewDidLoad() {
