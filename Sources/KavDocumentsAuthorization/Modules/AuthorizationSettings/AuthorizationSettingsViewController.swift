@@ -95,9 +95,9 @@ final class AuthorizationSettingsViewController: UIViewController {
     func setUpSnapshot() {
         var snapshot = dataSource.snapshot()
         
-        guard snapshot.numberOfSections == 1 else { return }
-        
         if authorizationService.isAuthorizationEnabled {
+            guard snapshot.numberOfSections == 1 else { return }
+            
             snapshot.appendSections([1])
             
             let changeCodeDataModel = AuthorizationSettingsDataModel(uuid: UUID(), isEnable: true, title: "Change code", action: nil)
