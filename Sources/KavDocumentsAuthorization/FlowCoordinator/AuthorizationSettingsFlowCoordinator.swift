@@ -25,7 +25,7 @@ public final class AuthorizationSettingsFlowCoordinator: FlowCoordinatorProtocol
     
     private weak var authorizationModuleInput: AuthorizationSettingsModuleInput?
     
-    init(resolver: ResolverProtocol, rootNavigationController: UINavigationController, output: AuthorizationSettingsFlowCoordinatorOutput) {
+    public init(resolver: ResolverProtocol, rootNavigationController: UINavigationController, output: AuthorizationSettingsFlowCoordinatorOutput) {
         self.resolver = resolver
         self.rootNavigationController = rootNavigationController
         self.output = output

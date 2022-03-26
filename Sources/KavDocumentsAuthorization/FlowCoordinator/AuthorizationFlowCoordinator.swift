@@ -20,7 +20,7 @@ public final class AuthorizationFlowCoordinator: FlowCoordinatorProtocol {
     
     private let authorizationService: AuthorizationServiceProtocol
     
-    init(resolver: ResolverProtocol, rootNavigationController: UINavigationController, output: AuthorizationFlowCoordinatorOutput?) {
+    public init(resolver: ResolverProtocol, rootNavigationController: UINavigationController, output: AuthorizationFlowCoordinatorOutput?) {
         self.resolver = resolver
         self.authorizationService = resolver.authorizationService
         self.rootNavigationController = rootNavigationController
