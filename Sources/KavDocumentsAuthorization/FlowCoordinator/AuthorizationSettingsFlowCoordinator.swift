@@ -13,7 +13,7 @@ public protocol AuthorizationSettingsFlowCoordinatorOutput: AnyObject {
 
 public final class AuthorizationSettingsFlowCoordinator: FlowCoordinatorProtocol {
     
-    private let rootNavigationController: UINavigationController
+    private weak var rootNavigationController: UINavigationController?
     private let resolver: ResolverProtocol
     private weak var output: AuthorizationSettingsFlowCoordinatorOutput?
     
@@ -34,7 +34,7 @@ public final class AuthorizationSettingsFlowCoordinator: FlowCoordinatorProtocol
     public func start(animated: Bool) {
         let authorizationSettingsViewController = AuthorizationSettingsViewController(resolver: resolver, moduleOutput: self)
         
-        rootNavigationController.pushViewController(authorizationSettingsViewController, animated: animated)
+        rootNavigationController?.pushViewController(authorizationSettingsViewController, animated: animated)
     }
     
     public func finish(animated: Bool, completion: (() -> Void)?) {
@@ -59,7 +59,7 @@ extension AuthorizationSettingsFlowCoordinator: AuthorizationSettingsModuleOutpu
         
         self.authorizationSwitch = sender
         
-        rootNavigationController.present(codeViewController, animated: true)
+        rootNavigationController?.present(codeViewController, animated: true)
     }
     
     func authorizationSettingsModuleWantsToOpenChangeCode() {
@@ -67,7 +67,7 @@ extension AuthorizationSettingsFlowCoordinator: AuthorizationSettingsModuleOutpu
         codeViewController.moduleOutput = self
         self.codeViewController = codeViewController
         
-        rootNavigationController.present(codeViewController, animated: true)
+        rootNavigationController?.present(codeViewController, animated: true)
     }
     
     func authorizationSettingsModuleWantsToOpenBiometry(sender: UISwitch) {
@@ -75,7 +75,7 @@ extension AuthorizationSettingsFlowCoordinator: AuthorizationSettingsModuleOutpu
         self.biometryViewController = biometryViewController
         
         self.biometrySwitch = sender
-        rootNavigationController.present(biometryViewController, animated: true)
+        rootNavigationController?.present(biometryViewController, animated: true)
     }
 }
 

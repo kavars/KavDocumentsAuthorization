@@ -40,6 +40,7 @@ final class AuthorizationSettingsViewController: UIViewController {
         let tableView = UITableView(frame: .zero, style: .insetGrouped)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.register(AuthorizationSettingsCell.self, forCellReuseIdentifier: "settingsCell")
+        tableView.rowHeight = 44
         return tableView
     }()
     
