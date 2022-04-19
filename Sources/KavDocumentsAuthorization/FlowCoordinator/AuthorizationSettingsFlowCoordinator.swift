@@ -84,7 +84,14 @@ extension AuthorizationSettingsFlowCoordinator: AuthorizationSettingsModuleOutpu
     }
     
     func authorizationSettingsModuleWantsToOpenBiometry(sender: UISwitch) {
-        let biometryViewController = BiometryViewController(resolver: resolver, output: self, state: .change)
+        
+        let moduleBuilder = BiometryModuleBuilder(
+            state: .change,
+            resolver: resolver,
+            moduleOutput: self
+        )
+        
+        let biometryViewController = moduleBuilder.builder()
         self.biometryViewController = biometryViewController
         
         self.biometrySwitch = sender

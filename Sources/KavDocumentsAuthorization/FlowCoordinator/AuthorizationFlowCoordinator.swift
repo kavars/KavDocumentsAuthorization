@@ -49,7 +49,13 @@ public final class AuthorizationFlowCoordinator: FlowCoordinatorProtocol {
 extension AuthorizationFlowCoordinator: CodeModuleOutput {
     func codeModuleWantsToOpenBiometry() {
         
-        let biometryViewController = BiometryViewController(resolver: resolver, output: self, state: .creation)
+        let moduleBuilder = BiometryModuleBuilder(
+            state: .creation,
+            resolver: resolver,
+            moduleOutput: self
+        )
+        
+        let biometryViewController = moduleBuilder.builder()
         
         rootNavigationController.pushViewController(biometryViewController, animated: true)
     }
