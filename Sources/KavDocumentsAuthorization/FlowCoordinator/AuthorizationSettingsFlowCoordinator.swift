@@ -53,8 +53,15 @@ extension AuthorizationSettingsFlowCoordinator: AuthorizationSettingsModuleOutpu
     }
     
     func authorizationSettingsModuleWantsToSetupAuthorization(sender: UISwitch) {
-        let codeViewController = CodeViewController(with: .change, authorizationService: resolver.authorizationService)
-        codeViewController.moduleOutput = self
+        
+        let moduleBuilder = CodeModuleBuilder(
+            viewState: .change,
+            resolver: resolver,
+            moduleOutput: self
+        )
+        
+        let codeViewController = moduleBuilder.build()
+        
         self.codeViewController = codeViewController
         
         self.authorizationSwitch = sender
@@ -63,8 +70,14 @@ extension AuthorizationSettingsFlowCoordinator: AuthorizationSettingsModuleOutpu
     }
     
     func authorizationSettingsModuleWantsToOpenChangeCode() {
-        let codeViewController = CodeViewController(with: .change, authorizationService: resolver.authorizationService)
-        codeViewController.moduleOutput = self
+        let moduleBuilder = CodeModuleBuilder(
+            viewState: .change,
+            resolver: resolver,
+            moduleOutput: self
+        )
+
+        let codeViewController = moduleBuilder.build()
+
         self.codeViewController = codeViewController
         
         rootNavigationController?.present(codeViewController, animated: true)

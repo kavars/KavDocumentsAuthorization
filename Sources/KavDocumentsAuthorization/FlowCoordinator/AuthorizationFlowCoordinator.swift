@@ -28,10 +28,16 @@ public final class AuthorizationFlowCoordinator: FlowCoordinatorProtocol {
     }
     
     public func start(animated: Bool) {
-        let state: CodeViewController.CodeModuleState = authorizationService.isAuthorizationEnabled ? .login : .create
-        
-        let codeVC = CodeViewController(with: state, authorizationService: resolver.authorizationService)
-        codeVC.moduleOutput = self
+        let state: CodeModuleState = authorizationService.isAuthorizationEnabled ? .login : .create
+
+        let codeBuilder = CodeModuleBuilder(
+            viewState: state,
+            resolver: resolver,
+            moduleOutput: self
+        )
+
+        let codeVC = codeBuilder.build()
+
         rootNavigationController.pushViewController(codeVC, animated: true)
     }
     
