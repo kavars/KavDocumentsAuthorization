@@ -103,7 +103,7 @@ extension CodePresenter: CodeViewOutput {
     func loginWithCode(code: String) {
         interactor.loginWithCode(code: code) { [weak self] success in
             if success {
-                self?.moduleOutput?.codeModuleWantsToClose()
+                self?.moduleOutput?.codeModuleWantsToAuthSuccess()
             } else {
                 self?.view?.setIncorrectCodeState()
             }
