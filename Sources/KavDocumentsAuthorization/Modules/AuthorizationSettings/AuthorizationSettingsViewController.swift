@@ -13,6 +13,7 @@ protocol AuthorizationSettingsModuleOutput: AnyObject {
     func authorizationSettingsModuleWantsToOpenChangeCode()
     func authorizationSettingsModuleWantsToOpenBiometry(sender: UISwitch)
     func setupModuleInput(_ input: AuthorizationSettingsModuleInput)
+    func moduleWantsToRemoveLockButton()
 }
 
 protocol AuthorizationSettingsModuleInput: AnyObject {
@@ -74,14 +75,13 @@ final class AuthorizationSettingsViewController: UIViewController {
             guard let self = self else { return }
             
             if sender.isOn {
-                // set up auth
-                // setup switch after user action
                 self.moduleOutput?.authorizationSettingsModuleWantsToSetupAuthorization(sender: sender)
             } else {
                 self.authorizationService.setAuthorizationEnable(false)
                 self.authorizationService.setBiometry(false)
                 
                 self.setUpSnapshot()
+                self.moduleOutput?.moduleWantsToRemoveLockButton()
             }
         }
         

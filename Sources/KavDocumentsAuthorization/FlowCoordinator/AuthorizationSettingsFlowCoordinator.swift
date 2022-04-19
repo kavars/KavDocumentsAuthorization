@@ -9,6 +9,8 @@ import UIKit
 
 public protocol AuthorizationSettingsFlowCoordinatorOutput: AnyObject {
     func authorizationSettingsFlowCoordinatorWantsToClose()
+    func authorizationSettingsFlowCoordinatorWantsToSetupLockButton()
+    func authorizationSettingsFlowCoordinatorWantsToRemoveLockButton()
 }
 
 public final class AuthorizationSettingsFlowCoordinator: FlowCoordinatorProtocol {
@@ -97,6 +99,10 @@ extension AuthorizationSettingsFlowCoordinator: AuthorizationSettingsModuleOutpu
         self.biometrySwitch = sender
         rootNavigationController?.present(biometryViewController, animated: true)
     }
+    
+    func moduleWantsToRemoveLockButton() {
+        output?.authorizationSettingsFlowCoordinatorWantsToRemoveLockButton()
+    }
 }
 
 extension AuthorizationSettingsFlowCoordinator: CodeModuleOutput {
@@ -104,6 +110,7 @@ extension AuthorizationSettingsFlowCoordinator: CodeModuleOutput {
         authorizationSwitch = nil
         codeViewController?.dismiss(animated: true) { [weak self] in
             self?.authorizationModuleInput?.reloadData()
+            self?.output?.authorizationSettingsFlowCoordinatorWantsToSetupLockButton()
         }
     }
     
