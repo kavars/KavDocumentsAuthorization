@@ -27,6 +27,13 @@ final class CodePresenter {
         self.interactor = interactor
         self.moduleOutput = moduleOutput
     }
+    
+    // MARK: Private Methods
+    
+    private func didReceiveError(_ error: Error) {
+        // TODO: Add alert service
+        print(error)
+    }
 }
 
 // MARK: - CodeModuleInput
@@ -53,10 +60,10 @@ extension CodePresenter: CodeViewOutput {
     func startBiometryLoginIfNeeded() {
         interactor.startBiometryLoginIfNeeded { [weak self] result in
             switch result {
-            case .success(()):
+            case .success:
                 self?.moduleOutput?.codeModuleWantsToAuthSuccess()
             case .failure(let error):
-                print("Error:", error)
+                self?.didReceiveError(error)
             }
         }
     }

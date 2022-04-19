@@ -56,28 +56,28 @@ final class CodeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        setupView()
+        setupBiometryButtonIfNeeded()
+        setupContinueButton()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        startBiometryLoginIfNeeded()
+        codeTextField.becomeFirstResponder()
+    }
+    
+    // MARK: Private Methods
+    
+    private func setupView() {
         view.backgroundColor = .systemBackground
-        
         title = "Code"
         
         codeTextField.delegate = self
         
         view.addSubview(codeTextField)
         view.addSubview(continueButton)
-        
-        setupBiometryButtonIfNeeded()
-
-        continueButton.addAction(UIAction(handler: { [weak self] _ in
-            guard let self = self, let text = self.codeTextField.text else { return }
-            switch self.state {
-            case .create:
-                self.output.setupCode(code: text)
-            case .login:
-                self.output.loginWithCode(code: text)
-            case .change:
-                self.output.changeCode(code: text)
-            }
-        }), for: .touchUpInside)
         
         NSLayoutConstraint.activate([
             codeTextField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
@@ -91,15 +91,20 @@ final class CodeViewController: UIViewController {
             continueButton.heightAnchor.constraint(equalToConstant: 60)
         ])
     }
-
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-
-        startBiometryLoginIfNeeded()
-        codeTextField.becomeFirstResponder()
-    }
     
-    // MARK: Private Methods
+    private func setupContinueButton() {
+        continueButton.addAction(UIAction(handler: { [weak self] _ in
+            guard let self = self, let text = self.codeTextField.text else { return }
+            switch self.state {
+            case .create:
+                self.output.setupCode(code: text)
+            case .login:
+                self.output.loginWithCode(code: text)
+            case .change:
+                self.output.changeCode(code: text)
+            }
+        }), for: .touchUpInside)
+    }
     
     private func setNormalCodeState() {
         codeTextField.layer.borderColor = UIColor.black.cgColor
