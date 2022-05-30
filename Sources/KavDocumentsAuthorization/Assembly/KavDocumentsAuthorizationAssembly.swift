@@ -12,6 +12,7 @@ public class KavDocumentsAuthorizationAssembly: Assembly {
         container.register(AuthorizationServiceProtocol.self) { _ in
             return AuthorizationService()
         }
+        .inObjectScope(.weak)
     }
     
     public init() {}
