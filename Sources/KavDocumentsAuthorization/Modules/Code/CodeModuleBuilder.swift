@@ -6,17 +6,18 @@
 //
 
 import Foundation
+import KavUtils
 import UIKit
 
 final class CodeModuleBuilder {
     
     private let viewState: CodeModuleState
-    private let resolver: ResolverProtocol
+    private let resolver: KavResolver
     private weak var moduleOutput: CodeModuleOutput?
     
     init(
         viewState: CodeModuleState,
-        resolver: ResolverProtocol,
+        resolver: KavResolver,
         moduleOutput: CodeModuleOutput?
     ) {
         self.viewState = viewState
@@ -27,7 +28,7 @@ final class CodeModuleBuilder {
     func build() -> UIViewController {
         
         let interactor = CodeInteractor(
-            authorizationService: resolver.authorizationService
+            authorizationService: resolver.resolve()
         )
         let presenter = CodePresenter(
             interactor: interactor,

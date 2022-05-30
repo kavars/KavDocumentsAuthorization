@@ -5,6 +5,7 @@
 //  Created by Kirill Varshamov on 24.03.2022.
 //
 
+import KavUtils
 import UIKit
 
 public protocol AuthorizationSettingsFlowCoordinatorOutput: AnyObject {
@@ -16,7 +17,7 @@ public protocol AuthorizationSettingsFlowCoordinatorOutput: AnyObject {
 public final class AuthorizationSettingsFlowCoordinator: FlowCoordinatorProtocol {
     
     private weak var rootNavigationController: UINavigationController?
-    private let resolver: ResolverProtocol
+    private let resolver: KavResolver
     private weak var output: AuthorizationSettingsFlowCoordinatorOutput?
     
     private weak var codeViewController: UIViewController?
@@ -27,7 +28,7 @@ public final class AuthorizationSettingsFlowCoordinator: FlowCoordinatorProtocol
     
     private weak var authorizationModuleInput: AuthorizationSettingsModuleInput?
     
-    public init(resolver: ResolverProtocol, rootNavigationController: UINavigationController, output: AuthorizationSettingsFlowCoordinatorOutput) {
+    public init(resolver: KavResolver, rootNavigationController: UINavigationController, output: AuthorizationSettingsFlowCoordinatorOutput) {
         self.resolver = resolver
         self.rootNavigationController = rootNavigationController
         self.output = output

@@ -5,6 +5,7 @@
 //  Created by Kirill Varshamov on 08.03.2022.
 //
 
+import KavUtils
 import UIKit
 
 public protocol AuthorizationFlowCoordinatorOutput: AnyObject {
@@ -15,14 +16,14 @@ public protocol AuthorizationFlowCoordinatorOutput: AnyObject {
 public final class AuthorizationFlowCoordinator: FlowCoordinatorProtocol {
     
     private let rootNavigationController: UINavigationController
-    private let resolver: ResolverProtocol
+    private let resolver: KavResolver
     private weak var output: AuthorizationFlowCoordinatorOutput?
     
     private let authorizationService: AuthorizationServiceProtocol
     
-    public init(resolver: ResolverProtocol, rootNavigationController: UINavigationController, output: AuthorizationFlowCoordinatorOutput?) {
+    public init(resolver: KavResolver, rootNavigationController: UINavigationController, output: AuthorizationFlowCoordinatorOutput?) {
         self.resolver = resolver
-        self.authorizationService = resolver.authorizationService
+        self.authorizationService = resolver.resolve()
         self.rootNavigationController = rootNavigationController
         self.output = output
     }

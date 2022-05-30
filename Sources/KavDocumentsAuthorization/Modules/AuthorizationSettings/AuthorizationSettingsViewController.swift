@@ -5,6 +5,7 @@
 //  Created by Kirill Varshamov on 24.03.2022.
 //
 
+import KavUtils
 import UIKit
 
 protocol AuthorizationSettingsModuleOutput: AnyObject {
@@ -25,8 +26,8 @@ final class AuthorizationSettingsViewController: UIViewController {
     private let authorizationService: AuthorizationServiceProtocol
     private weak var moduleOutput: AuthorizationSettingsModuleOutput?
     
-    init(resolver: ResolverProtocol, moduleOutput: AuthorizationSettingsModuleOutput) {
-        self.authorizationService = resolver.authorizationService
+    init(resolver: KavResolver, moduleOutput: AuthorizationSettingsModuleOutput) {
+        self.authorizationService = resolver.resolve()
         self.moduleOutput = moduleOutput
         super.init(nibName: nil, bundle: nil)
     }

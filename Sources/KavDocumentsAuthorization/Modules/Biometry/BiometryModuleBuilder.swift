@@ -6,17 +6,18 @@
 //
 
 import Foundation
+import KavUtils
 import UIKit
 
 final class BiometryModuleBuilder {
     
     private let state: BiometryState
-    private let resolver: ResolverProtocol
+    private let resolver: KavResolver
     private weak var moduleOutput: BiometryModuleOutput?
     
     init(
         state: BiometryState,
-        resolver: ResolverProtocol,
+        resolver: KavResolver,
         moduleOutput: BiometryModuleOutput?
     ) {
         self.state = state
@@ -26,7 +27,7 @@ final class BiometryModuleBuilder {
     
     func builder() -> UIViewController {
         let interactor = BiometryInteractor(
-            authorizationService: resolver.authorizationService
+            authorizationService: resolver.resolve()
         )
         let presenter = BiometryPresenter(
             interactor: interactor,
