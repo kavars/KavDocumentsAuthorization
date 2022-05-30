@@ -13,4 +13,6 @@ public class KavDocumentsAuthorizationAssembly: Assembly {
             return AuthorizationService()
         }
     }
+    
+    public init() {}
 }
