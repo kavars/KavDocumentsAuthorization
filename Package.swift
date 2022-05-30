@@ -15,6 +15,8 @@ let package = Package(
             targets: ["KavDocumentsAuthorization"]),
     ],
     dependencies: [
+        .package(url: "https://github.com/Swinject/Swinject", from: "2.8.0"),
+        .package(url: "https://github.com/kavars/KavUtils", from: "0.1.0")
         // Dependencies declare other packages that this package depends on.
         // .package(url: /* package url */, from: "1.0.0"),
     ],
@@ -23,7 +25,10 @@ let package = Package(
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .target(
             name: "KavDocumentsAuthorization",
-            dependencies: []),
+            dependencies: [
+                "Swinject",
+                "KavUtils"
+            ]),
         .testTarget(
             name: "KavDocumentsAuthorizationTests",
             dependencies: ["KavDocumentsAuthorization"]),
