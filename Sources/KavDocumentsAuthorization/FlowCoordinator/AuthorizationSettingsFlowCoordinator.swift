@@ -35,7 +35,12 @@ public final class AuthorizationSettingsFlowCoordinator: FlowCoordinatorProtocol
     }
     
     public func start(animated: Bool) {
-        let authorizationSettingsViewController = AuthorizationSettingsViewController(resolver: resolver, moduleOutput: self)
+        let builder = AuthorizationSettingsBuilder(
+            resolver: resolver,
+            moduleOutput: self
+        )
+        
+        let authorizationSettingsViewController = builder.build()
         
         rootNavigationController?.pushViewController(authorizationSettingsViewController, animated: animated)
     }

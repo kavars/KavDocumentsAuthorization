@@ -5,8 +5,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/kavars/KavUtils",
       "state" : {
-        "revision" : "3a3717474d9c78a63e1494aa0f1cf59a4cba80b3",
-        "version" : "0.1.0"
+        "revision" : "d41594f5b2ec4f1de5eaeb7affd6a12b7e5521ec",
+        "version" : "0.2.0"
       }
     },
     {
