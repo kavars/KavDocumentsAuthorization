@@ -5,41 +5,36 @@
 //  Created by Kirill Varshamov on 24.03.2022.
 //
 
+import KavUtils
 import UIKit
 
 final class AuthorizationSettingsCell: UITableViewCell {
     
-    let titleLabel: UILabel = {
+    // MARK: Private Properties
+    
+    private let titleLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
-    let settingSwitch: UISwitch = {
+    private let settingSwitch: UISwitch = {
         let switcher = UISwitch()
         return switcher
     }()
     
-    var action: ((UISwitch) -> Void)?
+    private var action: ((Bool, @escaping (Bool) -> Void) -> Void)?
+    
+    // MARK: Life Cycle
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         
-        contentView.addSubview(titleLabel)
-        
-        accessoryView = settingSwitch
-        
-        NSLayoutConstraint.activate([
-            titleLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
-            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
-        ])
-        
-        settingSwitch.addAction(UIAction(handler: { [weak self] _ in
-            guard let self = self else { return }
-            self.action?(self.settingSwitch)
-        }), for: .valueChanged)
-        
-        selectionStyle = .none
+        setupView()
+    }
+    
+    required init?(coder: NSCoder) {
+        notImplemented()
     }
     
     override func prepareForReuse() {
@@ -50,7 +45,34 @@ final class AuthorizationSettingsCell: UITableViewCell {
         accessoryView = settingSwitch
     }
     
-    func configure(with model: AuthorizationSettingsViewController.AuthorizationSettingsDataModel) {
+    // MARK: Private Methods
+    
+    private func setupView() {
+        contentView.addSubview(titleLabel)
+        
+        accessoryView = settingSwitch
+        
+        NSLayoutConstraint.activate([
+            titleLabel.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
+            titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+        ])
+        
+        let actionWithSwitch: (Bool) -> Void = { [weak self] isOn in
+            guard let self = self else { return }
+            self.settingSwitch.setOn(isOn, animated: true)
+        }
+        
+        settingSwitch.addAction(UIAction(handler: { [weak self] _ in
+            guard let self = self else { return }
+            self.action?(self.settingSwitch.isOn, actionWithSwitch)
+        }), for: .valueChanged)
+        
+        selectionStyle = .none
+    }
+    
+    // MARK: Public Methods
+    
+    func configure(with model: AuthorizationSettingsDataModel) {
         titleLabel.text = model.title
         settingSwitch.isOn = model.isEnable
         action = model.action
@@ -59,9 +81,5 @@ final class AuthorizationSettingsCell: UITableViewCell {
             accessoryView = nil
             accessoryType = .disclosureIndicator
         }
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("Not implemented")
     }
 }
