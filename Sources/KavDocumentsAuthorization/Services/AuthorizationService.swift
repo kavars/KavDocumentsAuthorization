@@ -8,13 +8,13 @@
 import Foundation
 import LocalAuthentication
 
-final class AuthorizationService: AuthorizationServiceProtocol {
+public final class AuthorizationService: AuthorizationServiceProtocol {
     
     private var context = LAContext()
     
     init() {}
     
-    func verifyCode(_ code: String) -> Bool {
+    public func verifyCode(_ code: String) -> Bool {
         
         guard let string = UserDefaults.standard.string(forKey: "kCode") else {
             return false
@@ -23,15 +23,15 @@ final class AuthorizationService: AuthorizationServiceProtocol {
         return string == code
     }
     
-    var isBiometryEnabled: Bool {
+    public var isBiometryEnabled: Bool {
         return UserDefaults.standard.bool(forKey: "kBiometry")
     }
     
-    var isBiometryAvailible: Bool {
+    public var isBiometryAvailible: Bool {
         return context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil)
     }
     
-    var biometryType: BiometryType {
+    public var biometryType: BiometryType {
         
         switch context.biometryType {
         case .faceID:
@@ -45,24 +45,24 @@ final class AuthorizationService: AuthorizationServiceProtocol {
         }
     }
     
-    var isAuthorizationEnabled: Bool {
+    public var isAuthorizationEnabled: Bool {
         UserDefaults.standard.bool(forKey: "kAuthEnable")
     }
     
-    func setAuthorizationEnable(_ isEnable: Bool) {
+    public func setAuthorizationEnable(_ isEnable: Bool) {
         UserDefaults.standard.set(isEnable, forKey: "kAuthEnable")
     }
     
-    func setCode(_ code: String) {
+    public func setCode(_ code: String) {
         UserDefaults.standard.set(code, forKey: "kCode")
     }
     
-    func setBiometry(_ isEnable: Bool) {
+    public func setBiometry(_ isEnable: Bool) {
         UserDefaults.standard.set(isEnable, forKey: "kBiometry")
     }
     
     // rename method
-    func setBiometry(completion: @escaping (Result<Void, Error>) -> Void) {
+    public func setBiometry(completion: @escaping (Result<Void, Error>) -> Void) {
         context = LAContext()
         context.localizedCancelTitle = "Enter Code"
         var error: NSError?
@@ -86,7 +86,7 @@ final class AuthorizationService: AuthorizationServiceProtocol {
         }
     }
     
-    var isFirstLaunch: Bool {
+    public var isFirstLaunch: Bool {
         if UserDefaults.standard.string(forKey: "test") == nil {
             return true
         }
@@ -94,7 +94,7 @@ final class AuthorizationService: AuthorizationServiceProtocol {
         return UserDefaults.standard.bool(forKey: "kFirstLaunch")
     }
     
-    func setFirstLaunchFalse() {
+    public func setFirstLaunchFalse() {
         UserDefaults.standard.set("test", forKey: "test")
         UserDefaults.standard.set(false, forKey: "kFirstLaunch")
     }
