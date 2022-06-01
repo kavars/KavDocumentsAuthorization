@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum BiometryType {
+public enum BiometryType {
     case faceID
     case touchID
     case none

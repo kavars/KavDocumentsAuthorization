@@ -7,7 +7,7 @@
 
 import Foundation
 
-protocol AuthorizationServiceProtocol {
+public protocol AuthorizationServiceProtocol {
     var isFirstLaunch: Bool { get }
     var isBiometryAvailible: Bool { get }
     var biometryType: BiometryType { get }
