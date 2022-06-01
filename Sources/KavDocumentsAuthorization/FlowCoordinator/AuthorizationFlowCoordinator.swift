@@ -15,11 +15,15 @@ public protocol AuthorizationFlowCoordinatorOutput: AnyObject {
 
 public final class AuthorizationFlowCoordinator: FlowCoordinatorProtocol {
     
+    // MARK: Private Properties
+    
     private let rootNavigationController: UINavigationController
     private let resolver: KavResolver
     private weak var output: AuthorizationFlowCoordinatorOutput?
     
     private let authorizationService: AuthorizationServiceProtocol
+    
+    // MARK: Life Cycle
     
     public init(resolver: KavResolver, rootNavigationController: UINavigationController, output: AuthorizationFlowCoordinatorOutput?) {
         self.resolver = resolver
@@ -27,6 +31,8 @@ public final class AuthorizationFlowCoordinator: FlowCoordinatorProtocol {
         self.rootNavigationController = rootNavigationController
         self.output = output
     }
+    
+    // MARK: Public Methods
     
     public func start(animated: Bool) {
         let state: CodeModuleState = authorizationService.isAuthorizationEnabled ? .login : .create
@@ -47,7 +53,10 @@ public final class AuthorizationFlowCoordinator: FlowCoordinatorProtocol {
     }
 }
 
+// MARK: - CodeModuleOutput
+
 extension AuthorizationFlowCoordinator: CodeModuleOutput {
+    
     func codeModuleWantsToOpenBiometry() {
         
         let moduleBuilder = BiometryModuleBuilder(
@@ -70,7 +79,10 @@ extension AuthorizationFlowCoordinator: CodeModuleOutput {
     }
 }
 
+// MARK: - BiometryModuleOutput
+
 extension AuthorizationFlowCoordinator: BiometryModuleOutput {
+    
     func biometryModuleWantsToAuthSuccess() {
         output?.authorizationFlowCoordinatorWantsToOpenMain()
     }

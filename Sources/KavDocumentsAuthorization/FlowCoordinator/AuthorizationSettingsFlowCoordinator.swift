@@ -72,6 +72,8 @@ public final class AuthorizationSettingsFlowCoordinator: FlowCoordinatorProtocol
     }
 }
 
+// MARK: - AuthorizationSettingsModuleOutput
+
 extension AuthorizationSettingsFlowCoordinator: AuthorizationSettingsModuleOutput {
     
     func setupModuleInput(_ input: AuthorizationSettingsModuleInput) {
@@ -110,7 +112,10 @@ extension AuthorizationSettingsFlowCoordinator: AuthorizationSettingsModuleOutpu
     }
 }
 
+// MARK: - CodeModuleOutput
+
 extension AuthorizationSettingsFlowCoordinator: CodeModuleOutput {
+    
     func codeModuleWantsToAuthSuccess() {
         codeViewController?.dismiss(animated: true) { [weak self] in
             self?.authorizationModuleInput?.reloadData()
@@ -127,7 +132,10 @@ extension AuthorizationSettingsFlowCoordinator: CodeModuleOutput {
     }
 }
 
+// MARK: - BiometryModuleOutput
+
 extension AuthorizationSettingsFlowCoordinator: BiometryModuleOutput {
+    
     func biometryModuleWantsToAuthSuccess() {
         biometryViewController?.dismiss(animated: true)
     }

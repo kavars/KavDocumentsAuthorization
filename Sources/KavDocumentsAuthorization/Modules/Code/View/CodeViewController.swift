@@ -5,6 +5,7 @@
 //  Created by Kirill Varshamov on 09.03.2022.
 //
 
+import KavUtils
 import UIKit
 
 final class CodeViewController: UIViewController {
@@ -46,7 +47,7 @@ final class CodeViewController: UIViewController {
     }
     
     required init?(coder: NSCoder) {
-        fatalError("Not implemented")
+        notImplemented()
     }
     
     deinit {
@@ -142,6 +143,7 @@ final class CodeViewController: UIViewController {
 // MARK: - CodeViewInput
 
 extension CodeViewController: CodeViewInput {
+    
     func clearTextField() {
         codeTextField.text = nil
     }
@@ -155,6 +157,7 @@ extension CodeViewController: CodeViewInput {
 // MARK: - UITextFieldDelegate
 
 extension CodeViewController: UITextFieldDelegate {
+    
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         
         setNormalCodeState()

@@ -5,6 +5,7 @@
 //  Created by Kirill Varshamov on 09.03.2022.
 //
 
+import KavUtils
 import UIKit
 
 final class BiometryViewController: UIViewController {
@@ -21,7 +22,7 @@ final class BiometryViewController: UIViewController {
     }
     
     required init?(coder: NSCoder) {
-        fatalError("Not implemented")
+        notImplemented()
     }
     
     override func viewDidLoad() {

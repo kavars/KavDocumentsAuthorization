@@ -27,6 +27,7 @@ final class CodeInteractor {
 // MARK: - CodeInteractorInput
 
 extension CodeInteractor: CodeInteractorInput {
+    
     func startBiometryLoginIfNeeded(completion: @escaping (Result<Void, Error>) -> Void) {
         if authorizationService.isBiometryAvailible && authorizationService.isBiometryEnabled {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
