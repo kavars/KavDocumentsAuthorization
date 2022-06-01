@@ -44,5 +44,4 @@ final class CodeModuleBuilder {
         
         return view
     }
-    
 }

@@ -45,6 +45,7 @@ extension CodePresenter: CodeModuleInput {
 // MARK: - CodeInteractorOutput
 
 extension CodePresenter: CodeInteractorOutput {
+    
     func openBiometryModule() {
         moduleOutput?.codeModuleWantsToOpenBiometry()
     }
@@ -57,6 +58,7 @@ extension CodePresenter: CodeInteractorOutput {
 // MARK: - CodeViewOutput
 
 extension CodePresenter: CodeViewOutput {
+    
     func startBiometryLoginIfNeeded() {
         interactor.startBiometryLoginIfNeeded { [weak self] result in
             switch result {
