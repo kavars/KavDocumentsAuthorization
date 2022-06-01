@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import UIKit
 
 enum AuthorizationSettingsItem: Hashable {
     case authorization(AuthorizationSettingsDataModel)
@@ -18,7 +17,7 @@ struct AuthorizationSettingsDataModel: Hashable {
     let uuid: UUID
     let isEnable: Bool
     let title: String
-    let action: ((UISwitch) -> Void)?
+    let action: ((Bool, @escaping (Bool) -> Void) -> Void)?
     
     static func ==(lhs: AuthorizationSettingsDataModel, rhs: AuthorizationSettingsDataModel) -> Bool {
         lhs.uuid == rhs.uuid && lhs.isEnable == rhs.isEnable && lhs.title == rhs.title

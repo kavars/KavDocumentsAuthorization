@@ -16,6 +16,8 @@ public protocol AuthorizationSettingsFlowCoordinatorOutput: AnyObject {
 
 public final class AuthorizationSettingsFlowCoordinator: FlowCoordinatorProtocol {
     
+    // MARK: Private Properties
+    
     private weak var rootNavigationController: UINavigationController?
     private let resolver: KavResolver
     private weak var output: AuthorizationSettingsFlowCoordinatorOutput?
@@ -23,16 +25,20 @@ public final class AuthorizationSettingsFlowCoordinator: FlowCoordinatorProtocol
     private weak var codeViewController: UIViewController?
     private weak var biometryViewController: UIViewController?
     
-    private weak var authorizationSwitch: UISwitch?
-    private weak var biometrySwitch: UISwitch?
+    private var authorizationSwitchCallback: ((Bool) -> Void)?
+    private var biometrySwitchCallback: ((Bool) -> Void)?
     
     private weak var authorizationModuleInput: AuthorizationSettingsModuleInput?
+    
+    // MARK: Life Cycle
     
     public init(resolver: KavResolver, rootNavigationController: UINavigationController, output: AuthorizationSettingsFlowCoordinatorOutput) {
         self.resolver = resolver
         self.rootNavigationController = rootNavigationController
         self.output = output
     }
+    
+    // MARK: Public Methods
     
     public func start(animated: Bool) {
         let builder = AuthorizationSettingsBuilder(
@@ -48,6 +54,22 @@ public final class AuthorizationSettingsFlowCoordinator: FlowCoordinatorProtocol
     public func finish(animated: Bool, completion: (() -> Void)?) {
         completion?()
     }
+    
+    // MARK: Private Methods
+    
+    private func openCodeModule() {
+        let moduleBuilder = CodeModuleBuilder(
+            viewState: .change,
+            resolver: resolver,
+            moduleOutput: self
+        )
+        
+        let codeViewController = moduleBuilder.build()
+        
+        self.codeViewController = codeViewController
+        
+        rootNavigationController?.present(codeViewController, animated: true)
+    }
 }
 
 extension AuthorizationSettingsFlowCoordinator: AuthorizationSettingsModuleOutput {
@@ -60,39 +82,20 @@ extension AuthorizationSettingsFlowCoordinator: AuthorizationSettingsModuleOutpu
         output?.authorizationSettingsFlowCoordinatorWantsToClose()
     }
     
-    func authorizationSettingsModuleWantsToSetupAuthorization(sender: UISwitch) {
-        
-        let moduleBuilder = CodeModuleBuilder(
-            viewState: .change,
-            resolver: resolver,
-            moduleOutput: self
-        )
-        
-        let codeViewController = moduleBuilder.build()
-        
-        self.codeViewController = codeViewController
-        
-        self.authorizationSwitch = sender
-        
-        rootNavigationController?.present(codeViewController, animated: true)
-    }
-    
     func authorizationSettingsModuleWantsToOpenChangeCode() {
-        let moduleBuilder = CodeModuleBuilder(
-            viewState: .change,
-            resolver: resolver,
-            moduleOutput: self
-        )
+        openCodeModule()
+    }
 
-        let codeViewController = moduleBuilder.build()
-
-        self.codeViewController = codeViewController
-        
-        rootNavigationController?.present(codeViewController, animated: true)
+    func moduleWantsToRemoveLockButton() {
+        output?.authorizationSettingsFlowCoordinatorWantsToRemoveLockButton()
     }
     
-    func authorizationSettingsModuleWantsToOpenBiometry(sender: UISwitch) {
-        
+    func authorizationSettingsModuleWantsToSetupAuthorization(callback: @escaping (Bool) -> Void) {
+        openCodeModule()
+        self.authorizationSwitchCallback = callback
+    }
+    
+    func authorizationSettingsModuleWantsToOpenBiometry(callback: @escaping (Bool) -> Void) {
         let moduleBuilder = BiometryModuleBuilder(
             state: .change,
             resolver: resolver,
@@ -102,18 +105,13 @@ extension AuthorizationSettingsFlowCoordinator: AuthorizationSettingsModuleOutpu
         let biometryViewController = moduleBuilder.builder()
         self.biometryViewController = biometryViewController
         
-        self.biometrySwitch = sender
+        self.biometrySwitchCallback = callback
         rootNavigationController?.present(biometryViewController, animated: true)
-    }
-    
-    func moduleWantsToRemoveLockButton() {
-        output?.authorizationSettingsFlowCoordinatorWantsToRemoveLockButton()
     }
 }
 
 extension AuthorizationSettingsFlowCoordinator: CodeModuleOutput {
     func codeModuleWantsToAuthSuccess() {
-        authorizationSwitch = nil
         codeViewController?.dismiss(animated: true) { [weak self] in
             self?.authorizationModuleInput?.reloadData()
             self?.output?.authorizationSettingsFlowCoordinatorWantsToSetupLockButton()
@@ -121,7 +119,7 @@ extension AuthorizationSettingsFlowCoordinator: CodeModuleOutput {
     }
     
     func codeModuleWantsToClose() {
-        authorizationSwitch?.setOn(false, animated: true)
+        authorizationSwitchCallback?(false)
     }
     
     func codeModuleWantsToOpenBiometry() {
@@ -136,7 +134,7 @@ extension AuthorizationSettingsFlowCoordinator: BiometryModuleOutput {
     
     func biometryModuleWantsToClose() {
         biometryViewController?.dismiss(animated: true) { [weak self] in
-            self?.biometrySwitch?.setOn(false, animated: true)
+            self?.biometrySwitchCallback?(false)
         }
     }
 }

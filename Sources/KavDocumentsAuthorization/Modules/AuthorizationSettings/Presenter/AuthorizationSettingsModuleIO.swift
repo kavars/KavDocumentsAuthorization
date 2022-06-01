@@ -14,9 +14,9 @@ protocol AuthorizationSettingsModuleInput: AnyObject {
 
 protocol AuthorizationSettingsModuleOutput: AnyObject {
     func authorizationSettingsModuleWantsToClose()
-    func authorizationSettingsModuleWantsToSetupAuthorization(sender: UISwitch)
     func authorizationSettingsModuleWantsToOpenChangeCode()
-    func authorizationSettingsModuleWantsToOpenBiometry(sender: UISwitch)
     func setupModuleInput(_ input: AuthorizationSettingsModuleInput)
     func moduleWantsToRemoveLockButton()
+    func authorizationSettingsModuleWantsToSetupAuthorization(callback: @escaping (Bool) -> Void)
+    func authorizationSettingsModuleWantsToOpenBiometry(callback: @escaping (Bool) -> Void)
 }

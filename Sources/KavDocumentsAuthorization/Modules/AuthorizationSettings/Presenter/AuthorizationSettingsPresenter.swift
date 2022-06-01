@@ -35,11 +35,11 @@ final class AuthorizationSettingsPresenter {
             uuid: UUID(),
             isEnable: interactor.isAuthorizationEnabled,
             title: "Authorization"
-        ) { [weak self] sender in
+        ) { [weak self] isOn, callback in
             guard let self = self else { return }
             
-            if sender.isOn {
-                self.moduleOutput?.authorizationSettingsModuleWantsToSetupAuthorization(sender: sender)
+            if isOn {
+                self.moduleOutput?.authorizationSettingsModuleWantsToSetupAuthorization(callback: callback)
             } else {
                 self.interactor.disableAuthorization()
                 
@@ -82,11 +82,11 @@ extension AuthorizationSettingsPresenter: AuthorizationSettingsViewOutput {
                     uuid: UUID(),
                     isEnable: interactor.isBiometryEnabled,
                     title: "Biometry"
-                ) { [weak self] sender in
+                ) { [weak self] isOn, callback in
                     guard let self = self else { return }
-                    
+
                     if !self.interactor.isBiometryEnabled {
-                        self.moduleOutput?.authorizationSettingsModuleWantsToOpenBiometry(sender: sender)
+                        self.moduleOutput?.authorizationSettingsModuleWantsToOpenBiometry(callback: callback)
                     } else {
                         self.interactor.disableBiometry()
                     }
@@ -108,7 +108,6 @@ extension AuthorizationSettingsPresenter: AuthorizationSettingsViewOutput {
 // MARK: - AuthorizationSettingsInteractorOutput
 
 extension AuthorizationSettingsPresenter: AuthorizationSettingsInteractorOutput {
-    
 
 }
 

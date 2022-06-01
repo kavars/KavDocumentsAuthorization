@@ -23,7 +23,7 @@ final class AuthorizationSettingsCell: UITableViewCell {
         return switcher
     }()
     
-    private var action: ((UISwitch) -> Void)?
+    private var action: ((Bool, @escaping (Bool) -> Void) -> Void)?
     
     // MARK: Life Cycle
     
@@ -57,9 +57,14 @@ final class AuthorizationSettingsCell: UITableViewCell {
             titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
         ])
         
+        let actionWithSwitch: (Bool) -> Void = { [weak self] isOn in
+            guard let self = self else { return }
+            self.settingSwitch.setOn(isOn, animated: true)
+        }
+        
         settingSwitch.addAction(UIAction(handler: { [weak self] _ in
             guard let self = self else { return }
-            self.action?(self.settingSwitch)
+            self.action?(self.settingSwitch.isOn, actionWithSwitch)
         }), for: .valueChanged)
         
         selectionStyle = .none
