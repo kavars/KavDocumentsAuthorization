@@ -117,6 +117,7 @@ extension AuthorizationSettingsFlowCoordinator: AuthorizationSettingsModuleOutpu
 extension AuthorizationSettingsFlowCoordinator: CodeModuleOutput {
     
     func codeModuleWantsToAuthSuccess() {
+        authorizationSwitchCallback = nil
         codeViewController?.dismiss(animated: true) { [weak self] in
             self?.authorizationModuleInput?.reloadData()
             self?.output?.authorizationSettingsFlowCoordinatorWantsToSetupLockButton()

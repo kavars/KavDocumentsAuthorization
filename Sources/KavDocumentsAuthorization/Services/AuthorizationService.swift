@@ -10,13 +10,30 @@ import LocalAuthentication
 
 public final class AuthorizationService: AuthorizationServiceProtocol {
     
-    private var context = LAContext()
+    // MARK: Private Data Struct
     
-    init() {}
+    private struct KeychainKeys {
+        static let code = KeychainKey(type: String.self, key: "kCode")
+        static let biometry = KeychainKey(type: Bool.self, key: "kBiometry")
+        static let authorizationEnable = KeychainKey(type: Bool.self, key: "kAuthEnable")
+        static let firstLaunch = KeychainKey(type: Bool.self, key: "kFirstLaunch")
+        static let firstLaunchValue = KeychainKey(type: Bool.self, key: "kFirstLaunchValue")
+    }
+    
+    // MARK: Private Properties
+    
+    private var context = LAContext()
+    private let keychainService: KeychainServiceProtocol
+    
+    // MARK: Life Cycle
+    init(keychainService: KeychainServiceProtocol) {
+        self.keychainService = keychainService
+    }
+    
+    // MARK: Public Methods
     
     public func verifyCode(_ code: String) -> Bool {
-        
-        guard let string = UserDefaults.standard.string(forKey: "kCode") else {
+        guard let string = keychainService.getValue(for: KeychainKeys.code) else {
             return false
         }
         
@@ -24,7 +41,7 @@ public final class AuthorizationService: AuthorizationServiceProtocol {
     }
     
     public var isBiometryEnabled: Bool {
-        return UserDefaults.standard.bool(forKey: "kBiometry")
+        return keychainService.getValue(for: KeychainKeys.biometry) ?? false
     }
     
     public var isBiometryAvailible: Bool {
@@ -46,19 +63,19 @@ public final class AuthorizationService: AuthorizationServiceProtocol {
     }
     
     public var isAuthorizationEnabled: Bool {
-        UserDefaults.standard.bool(forKey: "kAuthEnable")
+        keychainService.getValue(for: KeychainKeys.authorizationEnable) ?? false
     }
     
     public func setAuthorizationEnable(_ isEnable: Bool) {
-        UserDefaults.standard.set(isEnable, forKey: "kAuthEnable")
+        keychainService.setValue(isEnable, for: KeychainKeys.authorizationEnable)
     }
     
     public func setCode(_ code: String) {
-        UserDefaults.standard.set(code, forKey: "kCode")
+        keychainService.setValue(code, for: KeychainKeys.code)
     }
     
     public func setBiometry(_ isEnable: Bool) {
-        UserDefaults.standard.set(isEnable, forKey: "kBiometry")
+        keychainService.setValue(isEnable, for: KeychainKeys.biometry)
     }
     
     // rename method
@@ -68,11 +85,11 @@ public final class AuthorizationService: AuthorizationServiceProtocol {
         var error: NSError?
         if context.canEvaluatePolicy(.deviceOwnerAuthentication, error: &error) {
             let reason = "Log in to your account"
-            context.evaluatePolicy(.deviceOwnerAuthentication, localizedReason: reason ) { success, error in
+            context.evaluatePolicy(.deviceOwnerAuthentication, localizedReason: reason ) { [weak self] success, error in
 
                 if success {
-                    DispatchQueue.main.async {
-                        UserDefaults.standard.set(true, forKey: "kBiometry")
+                    DispatchQueue.main.async { [weak self] in
+                        self?.keychainService.setValue(true, for: KeychainKeys.biometry)
                         completion(.success(()))
                     }
                 } else {
@@ -87,15 +104,15 @@ public final class AuthorizationService: AuthorizationServiceProtocol {
     }
     
     public var isFirstLaunch: Bool {
-        if UserDefaults.standard.string(forKey: "test") == nil {
+        guard keychainService.getValue(for: KeychainKeys.firstLaunchValue) != nil else {
             return true
         }
         
-        return UserDefaults.standard.bool(forKey: "kFirstLaunch")
+        return keychainService.getValue(for: KeychainKeys.firstLaunch) ?? false
     }
     
     public func setFirstLaunchFalse() {
-        UserDefaults.standard.set("test", forKey: "test")
-        UserDefaults.standard.set(false, forKey: "kFirstLaunch")
+        keychainService.setValue(false, for: KeychainKeys.firstLaunchValue)
+        keychainService.setValue(false, for: KeychainKeys.firstLaunch)
     }
 }
