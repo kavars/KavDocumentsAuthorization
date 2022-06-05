@@ -8,7 +8,7 @@
 import Foundation
 
 protocol BiometryInteractorInput: AnyObject {
-    func setupAuthorization()
+
     func setupBiometry(completion: @escaping (Result<Void, Error>) -> Void)
 }
 

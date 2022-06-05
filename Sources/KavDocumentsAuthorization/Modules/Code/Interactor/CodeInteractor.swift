@@ -56,10 +56,10 @@ extension CodeInteractor: CodeInteractorInput {
     
     func setupCode(code: String) {
         authorizationService.setCode(code)
+        authorizationService.setAuthorizationEnable(true)
         if authorizationService.isBiometryAvailible {
             output?.openBiometryModule()
         } else {
-            authorizationService.setAuthorizationEnable(true)
             output?.authSuccess()
         }
     }

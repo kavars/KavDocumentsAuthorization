@@ -27,10 +27,6 @@ final class BiometryInteractor {
 // MARK: - BiometryInteractorInput
 
 extension BiometryInteractor: BiometryInteractorInput {
-    
-    func setupAuthorization() {
-        authorizationService.setAuthorizationEnable(true)
-    }
 
     func setupBiometry(completion: @escaping (Result<Void, Error>) -> Void) {
         authorizationService.setBiometry { result in
