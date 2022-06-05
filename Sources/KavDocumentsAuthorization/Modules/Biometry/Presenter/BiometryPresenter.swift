@@ -44,7 +44,6 @@ extension BiometryPresenter: BiometryViewOutput {
             case .success:
                 switch self.state {
                 case .creation:
-                    self.interactor.setupAuthorization()
                     self.moduleOutput?.biometryModuleWantsToAuthSuccess()
                 case .change:
                     self.moduleOutput?.biometryModuleWantsToAuthSuccess()
@@ -52,7 +51,6 @@ extension BiometryPresenter: BiometryViewOutput {
             case .failure:
                 switch self.state {
                 case .creation:
-                    self.interactor.setupAuthorization()
                     self.moduleOutput?.biometryModuleWantsToAuthSuccess()
                 case .change:
                     self.moduleOutput?.biometryModuleWantsToClose()
@@ -64,7 +62,6 @@ extension BiometryPresenter: BiometryViewOutput {
     func declineBiometry() {
         switch state {
         case .creation:
-            interactor.setupAuthorization()
             moduleOutput?.biometryModuleWantsToAuthSuccess()
         case .change:
             moduleOutput?.biometryModuleWantsToClose()
